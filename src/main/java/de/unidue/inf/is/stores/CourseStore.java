@@ -27,26 +27,28 @@ public class CourseStore implements Closeable {
         }
     }
     
-    public ArrayList<Course> getCoursesByUID(int userId) {
+    public ArrayList<Course> getCoursesByUID(int userId) throws IOException {
     	
     	try {
     		
     		ArrayList<Course> res = new ArrayList<Course>();
-    		String query = "SELECT k.kid, k.name, k.beschreibungstext, k.einschreibeschluessel, k.freieplaetze, k.ersteller"
+    		String query = "SELECT k.kid, k.name, k.beschreibungstext, k.einschreibeschluessel, k.freieplaetze, k.ersteller, b.name as nutzername"
     				+ " FROM dbp079.einschreiben e"
     				+ " JOIN dbp079.kurs k ON (e.kid = k.kid)"
+    				+ " JOIN dbp079.benutzer b ON (k.ersteller = b.bnummer)"
     				+ " WHERE e.bnummer=" + userId;
     		PreparedStatement pst = connection.prepareStatement(query);
     		ResultSet resultSet = pst.executeQuery();
     		
     		while(resultSet.next()) {
     			res.add(new Course(
-    					resultSet.getShort(1), 		//KID
-    					resultSet.getString(2), 	//Name
-    					resultSet.getString(3), 	//description
-    					resultSet.getString(4), 	//key
-    					resultSet.getShort(5), 		//capacity
-    					resultSet.getShort(6)));	//creator(id)
+    					resultSet.getShort("KID"), 		//KID
+    					resultSet.getString("NAME"), 	//Name
+    					resultSet.getString("BESCHREIBUNGSTEXT"), 	//description
+    					resultSet.getString("EINSCHREIBESCHLUESSEL"), 	//key
+    					resultSet.getShort("FREIEPLAETZE"), 		//capacity
+    					resultSet.getShort("ERSTELLER"),		//creator(id)
+    					resultSet.getString("NUTZERNAME")));	
     		}
     		
     		return res;
@@ -58,27 +60,27 @@ public class CourseStore implements Closeable {
     	}
     }
 	
-    public ArrayList<Course> getAvailableCourses(){
+    public ArrayList<Course> getAvailableCourses() throws IOException{
     	
     	try {
     		
     		ArrayList<Course> res = new ArrayList<Course>();
-    		String query = "SELECT * FROM dbp079.kurs WHERE kid IN"
-    				+ " (SELECT DISTINCT k.kid FROM dbp079.kurs k"
-    				+ " JOIN dbp079.einschreiben e ON (k.kid=e.kid)"
+    		String query = "SELECT * FROM dbp079.kurs k"
     				+ " WHERE k.freieplaetze > 0"
-    				+ " AND e.bnummer<>" + String.valueOf(User.getCurrentUserId()) + ")";
+    				+ " AND k.kid NOT IN (SELECT e.kid FROM dbp079.einschreiben e WHERE e.bnummer="
+    				+ String.valueOf(User.getCurrentUserId()) + ")";
     		PreparedStatement pst = connection.prepareStatement(query);
     		ResultSet resultSet = pst.executeQuery();
     		
     		while(resultSet.next()) {
     			res.add(new Course(
-    					resultSet.getShort(1), 		//KID
-    					resultSet.getString(2), 	//Name
-    					resultSet.getString(3), 	//description
-    					resultSet.getString(4), 	//key
-    					resultSet.getShort(5), 		//capacity
-    					resultSet.getShort(6)));	//creator(id)
+    					resultSet.getShort("KID"), 						//KID
+    					resultSet.getString("NAME"), 					//Name
+    					resultSet.getString("BESCHREIBUNGSTEXT"), 		//description
+    					resultSet.getString("EINSCHREIBESCHLUESSEL"), 	//key
+    					resultSet.getShort("FREIEPLAETZE"), 			//capacity
+    					resultSet.getShort(6),							//creatorId
+    					""));						//creatorName resultSet.getString(9)
     		}
     		
     		return res;
@@ -98,7 +100,7 @@ public class CourseStore implements Closeable {
             preparedStatement.setString(2, courseToAdd.getDescription());
             preparedStatement.setString(3,  courseToAdd.getKey());
             preparedStatement.setShort(4,  (short)courseToAdd.getCapacity());
-            preparedStatement.setShort(5,  (short)courseToAdd.getCreator());
+            preparedStatement.setShort(5,  (short)courseToAdd.getCreatorId());
             
             preparedStatement.executeUpdate();
             

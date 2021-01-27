@@ -22,7 +22,7 @@
   		<#list courses as course>
   			<div class="courseContainer">
   				<a href="/view_course">${course.title}</a>
-  				<p>Ersteller: ${course.creator}</p>
+  				<p>Ersteller: ${course.creatorName}</p>
   				<p>Freie Plätze: ${course.capacity}</p>
   			</div>
   		</#list>
@@ -31,15 +31,16 @@
   	<h4>Verfügbare Kurse</h4>
   		<#list avCourses as avCourse>
   			<div class="courseContainer">
-  				<a href="http://localhost:9079/onlineLearner">${avCourse.title}</a>
-  				<p>Ersteller: ${avCourse.creator}</p>
+  				<a href="/view_course">${avCourse.title}</a>
+  				<p>Ersteller: ${avCourse.creatorName}</p>
   				<p>Freie Plätze: ${avCourse.capacity}</p>
   			</div>
   		</#list>
-  	<br>
+  	<br/>
+  	<br/>
   	
   	<form action="new_course" method="get">
-  		<input type="submit" value="Erstellen" />
+  		<input type="submit" value="Neuen Kurs Erstellen" />
   	</form>
   		
 </body>

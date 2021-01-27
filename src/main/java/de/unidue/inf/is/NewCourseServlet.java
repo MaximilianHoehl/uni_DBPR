@@ -38,7 +38,7 @@ public class NewCourseServlet extends HttpServlet{
     		if(request.getParameter("name").length()>50) {	//Check if nameLength is greater than 50
         		request.setAttribute("message", "Dein Name darf nicht mehr als 50 Zeichen enthalten!");
         		request.setAttribute("color", "color: red;");
-        		request.setAttribute("targetAction", "view_main");
+        		request.setAttribute("targetAction", "new_course");
         		request.getRequestDispatcher("view_dialogue.ftl").forward(request, response);
         	}
         	if(request.getParameter("name").length()==0) {

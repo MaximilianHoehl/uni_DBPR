@@ -1,32 +1,38 @@
 package de.unidue.inf.is.domain;
 
+import java.io.IOException;
+
 public final class Course {
-	
+
 	private int id;
 	private String title;
 	private String description;
 	private String key;
 	private int capacity;
-	private int creator;
+	private int creatorId;
+	private String creatorName;
 	
-	
-	public Course(String title, String description, String key, short capacity, short creator) {
+	//Constructor for creating instance for UPDATING DB-DATA
+	public Course(String title, String description, String key, short capacity, short creator) throws IOException {
 			
 		this.title = title;
-		this.creator = creator;
+		this.creatorId = creator;
 		this.capacity = capacity;
 		this.description = description;
 		this.key = key;
 	}
-	public Course(short kid, String title, String description, String key, short capacity, short creator) {
+	//Constructor for creating instance from QUERIED DB-DATA
+	public Course(short kid, String title, String description, String key, short capacity, short creator, String creatorName) throws IOException {
 		
 		this.id = kid;
 		this.title = title;
-		this.creator = creator;
+		this.creatorId = creator;
 		this.capacity = capacity;
 		this.description = description;
 		this.key = key;
+		this.creatorName = creatorName;
 	}
+	
 	
 	//Getter
 	public int getId() {
@@ -49,9 +55,11 @@ public final class Course {
 	    return capacity;
 	}
 	
-    public int getCreator() {
-        return creator;
+    public int getCreatorId() {
+        return creatorId;
     }
-    
+    public String getCreatorName() {
+        return creatorName;
+    }
    
 }
