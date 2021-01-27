@@ -41,6 +41,10 @@ public class NAME extends HttpServlet{
 <body>
 
 	<h2>NAME</h2>
+	
+	<form action="ACTION" method="METHOD">
+  		<input type="submit" value="BTNNAME" />
+  	</form>
 
 </body>
 </html>
@@ -74,7 +78,10 @@ public class CourseStore implements Closeable {
         }
     }	
 	
-	
+	public void complete() {
+        complete = true;
+    }
+    
 	@Override
     public void close() throws IOException {
         if (connection != null) {

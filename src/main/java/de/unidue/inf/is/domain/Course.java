@@ -10,6 +10,14 @@ public final class Course {
 	private int creator;
 	
 	
+	public Course(String title, String description, String key, short capacity, short creator) {
+			
+		this.title = title;
+		this.creator = creator;
+		this.capacity = capacity;
+		this.description = description;
+		this.key = key;
+	}
 	public Course(short kid, String title, String description, String key, short capacity, short creator) {
 		
 		this.id = kid;

@@ -41,8 +41,8 @@ public final class UserStore implements Closeable {
 				int counter = 0;
 				
 				if(resultset.next()) {
-				res = new User(Integer.valueOf(
-						resultset.getShort(1)), 
+				res = new User(
+						resultset.getShort(1), 
 						resultset.getString(3), 
 						resultset.getString(2));
 				return res;

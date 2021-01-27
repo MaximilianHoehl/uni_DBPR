@@ -20,16 +20,36 @@ public class HTMLUtil {
 		return "<p>" + element + "</p>";
 	}
 	
-	public static String createBox(String content) {
+	public static String createMsg(String msg, int type) {
+		
+		String color;
+		switch(type) {
+		case 0:
+			color = "red;";
+			break;
+		case 1:
+			color = "green;";
+			break;
+		default:
+			color = null;
+			System.out.println("Invalid Messagetype at HTMLUtil:createMsg");
+		}
 		
 		String res = "<div style='"
 				+ "border-style: solid;"
+				+ "position: absolute"
+				+ "top: 50%;"
+				+ "left: 50%"
+				+ "width: 300px;"
+				+ "height: 200px;"
+				+ "color: " + color
+				+ "transform: translation(-50%,-50%);"
 				+ "border-width: 5px;"
 				+ "display: inline-block;"
 				+ "border-radius: 5px;"
 				+ "padding: 5px;"
 				+ "margin: 5px;'>"
-				+ content
+				+ msg
 				+"</div>";
 		return res;
 	}

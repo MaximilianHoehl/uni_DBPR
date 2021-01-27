@@ -21,18 +21,23 @@ public final class EntryServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	
-    	ArrayList<Course> avCourses = new ArrayList<>();
-    	
     	//LOGIN - fetch userData
     	UserStore userStore = new UserStore();
     	User me = userStore.getUserById(2);
+    	userStore.complete();
     	userStore.close();
     	String myName = me.getUserName();
+    	User.setCurrentUser(me.getUserId());
     	request.setAttribute("username", myName);
     	
     	//Initialize - fetch userCourses
     	CourseStore courseStore = new CourseStore();
     	ArrayList<Course> myCourses = courseStore.getCoursesByUID(me.getUserId());
+    	
+    	//Initialize - fetch availableCourses
+    	ArrayList<Course> avCourses = courseStore.getAvailableCourses();
+    	courseStore.complete();
+    	courseStore.close();
     	
     	request.setAttribute("courses", myCourses);
     	request.setAttribute("avCourses", avCourses);

@@ -2,7 +2,9 @@ package de.unidue.inf.is.domain;
 
 public final class User {
 	
-	private int userId;
+	private static short currentUserId; 
+	
+	private short userId;
     private String userName;
     private String email;
 
@@ -11,14 +13,24 @@ public final class User {
     }
 
 
-    public User(int userId, String userName, String email) {
+    public User(short userId, String userName, String email) {
         this.userId = userId;
         this.userName = userName;
         this.email = email;
     }
-
-
-    public int getUserId() {
+    
+    //static setter
+    public static void setCurrentUser(short id) {
+    	currentUserId = id;
+    }
+    
+    //static getter
+    public static short getCurrentUserId() {
+    	return currentUserId;
+    }
+    
+    //Getter
+    public short getUserId() {
         return userId;
     }
 

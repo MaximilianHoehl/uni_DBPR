@@ -58,7 +58,57 @@ public class CourseStore implements Closeable {
     	}
     }
 	
+    public ArrayList<Course> getAvailableCourses(){
+    	
+    	try {
+    		
+    		ArrayList<Course> res = new ArrayList<Course>();
+    		String query = "SELECT * FROM dbp079.kurs k"
+    				+ " WHERE k.freieplaetze > 0";
+    		PreparedStatement pst = connection.prepareStatement(query);
+    		ResultSet resultSet = pst.executeQuery();
+    		
+    		while(resultSet.next()) {
+    			res.add(new Course(
+    					resultSet.getShort(1), 		//KID
+    					resultSet.getString(2), 	//Name
+    					resultSet.getString(3), 	//description
+    					resultSet.getString(4), 	//key
+    					resultSet.getShort(5), 		//capacity
+    					resultSet.getShort(6)));	//creator(id)
+    		}
+    		
+    		return res;
+    	}catch(SQLException e) {
+    		
+    		e.printStackTrace();
+    		return null;
+    	}
+    }
+    
+    public void addCourse(Course courseToAdd) throws StoreException {	//add a user to instance (add to commit)
+        try {
+            PreparedStatement preparedStatement = connection
+                            .prepareStatement("insert into dbp079.kurs (name, beschreibungstext, einschreibeschluessel, freieplaetze, ersteller) values (?, ?, ?, ?, ?)");
+            
+            preparedStatement.setString(1, courseToAdd.getTitle());
+            preparedStatement.setString(2, courseToAdd.getDescription());
+            preparedStatement.setString(3,  courseToAdd.getKey());
+            preparedStatement.setShort(4,  (short)courseToAdd.getCapacity());
+            preparedStatement.setShort(5,  (short)courseToAdd.getCreator());
+            
+            preparedStatement.executeUpdate();
+            
+        }
+        catch (SQLException e) {
+            throw new StoreException(e);
+        }
+    }
 	
+    public void complete() {
+        complete = true;
+    }
+    
 	@Override
     public void close() throws IOException {
         if (connection != null) {
