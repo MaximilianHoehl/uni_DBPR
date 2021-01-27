@@ -1,0 +1,117 @@
+---------- Servlet Skeleton ----------
+
+package de.unidue.inf.is;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class NAME extends HttpServlet{
+
+	private static final long serialVersionUID = 1L;
+
+
+	@Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	
+    	request.getRequestDispatcher(FTL).forward(request, response);
+		 
+    }
+
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	
+    	request.getRequestDispatcher(FTL).forward(request, response);
+    }
+
+}
+
+---------- GUI Skeleton ----------
+<html>
+<head>
+	<title>NAME</title>
+</head>
+ 
+<body>
+
+	<h2>NAME</h2>
+
+</body>
+</html>
+
+
+---------- Store Skeleton ----------
+package de.unidue.inf.is.stores;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.sql.*;
+
+import de.unidue.inf.is.domain.User;
+import de.unidue.inf.is.utils.DBUtil;
+
+
+public class CourseStore implements Closeable {
+
+    private Connection connection;
+    private boolean complete;
+
+
+    public CourseStore() throws StoreException {	//create instance and open DB connection
+        try {
+            connection = DBUtil.getExternalConnection();
+            connection.setAutoCommit(false);
+            System.out.println("Setted up ext connection: " + connection);
+        }
+        catch (SQLException e) {
+            throw new StoreException(e);
+        }
+    }	
+	
+	
+	@Override
+    public void close() throws IOException {
+        if (connection != null) {
+            try {
+                if (complete) {
+                    connection.commit();
+                }
+                else {
+                    connection.rollback();
+                }
+            }
+            catch (SQLException e) {
+                throw new StoreException(e);
+            }
+            finally {
+                try {
+                    connection.close();
+                    System.out.println("Closed userStore instance");
+                }
+                catch (SQLException e) {
+                    throw new StoreException(e);
+                }
+            }
+        }
+    }
+
+}
+
+---------- Fake Data ----------
+ArrayList<Course> myCourses = new ArrayList<>();
+myCourses.add(new Course("Jennys Masturbationskurs", "Jenny Sunshine", 69));
+myCourses.add(new Course("DIY Air-raid alarms: How to scareprank your Grandpa", "Ross", 43));
+myCourses.add(new Course("Catshaving Masterclass", "Felia", 21));
+myCourses.add(new Course("How to get your medication from Darknet", "Janus Bananus", 3));
+
+ArrayList<Course> avCourses = new ArrayList<>();
+avCourses.add(new Course("Jennys Masturbationskurs", "Jenny Sunshine", 69));
+avCourses.add(new Course("DIY Air-raid alarms: How to scareprank your Grandpa", "Ross", 43));
+avCourses.add(new Course("Catshaving Masterclass", "Felia", 21));
+avCourses.add(new Course("How to get your medication from Darknet", "Janus Bananus", 3));
