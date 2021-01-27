@@ -7,8 +7,8 @@
 
 	<h4 style="${color}">${message}</h4>
 	
-	<form action="new_course" method="get">
-  		<input type="submit" value="Verstanden.. :/" />
+	<form action="${targetAction}" method="get">
+  		<input type="submit" value="Verstanden!" />
   	</form>
 
 </body>

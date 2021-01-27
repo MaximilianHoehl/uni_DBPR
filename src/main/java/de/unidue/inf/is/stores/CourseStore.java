@@ -63,8 +63,11 @@ public class CourseStore implements Closeable {
     	try {
     		
     		ArrayList<Course> res = new ArrayList<Course>();
-    		String query = "SELECT * FROM dbp079.kurs k"
-    				+ " WHERE k.freieplaetze > 0";
+    		String query = "SELECT * FROM dbp079.kurs WHERE kid IN"
+    				+ " (SELECT DISTINCT k.kid FROM dbp079.kurs k"
+    				+ " JOIN dbp079.einschreiben e ON (k.kid=e.kid)"
+    				+ " WHERE k.freieplaetze > 0"
+    				+ " AND e.bnummer<>" + String.valueOf(User.getCurrentUserId()) + ")";
     		PreparedStatement pst = connection.prepareStatement(query);
     		ResultSet resultSet = pst.executeQuery();
     		
