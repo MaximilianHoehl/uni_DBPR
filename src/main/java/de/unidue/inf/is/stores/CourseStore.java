@@ -27,6 +27,50 @@ public class CourseStore implements Closeable {
         }
     }
     
+    public Course getCourseByID(int id) throws SQLException, IOException {
+    	
+    	Course course;
+    	String query = "SELECT * FROM dbp079.kurs k WHERE k.kid = ?";
+    	PreparedStatement pts = connection.prepareStatement(query);
+    	pts.setInt(1, id);
+    	ResultSet resultSet = pts.executeQuery();
+    	while(resultSet.next()) {
+    		course = new Course(
+    				resultSet.getShort("KID"), 		//KID
+					resultSet.getString("NAME"), 	//Name
+					resultSet.getString("BESCHREIBUNGSTEXT"), 	//description
+					resultSet.getString("EINSCHREIBESCHLUESSEL"), 	//key
+					resultSet.getShort("FREIEPLAETZE"), 		//capacity
+					resultSet.getShort("ERSTELLER"));		//creator(id)	
+    		return course;
+    	}
+    	
+    	System.out.println("CourseStore: getCourseByID: Nothing found!");
+    	return null;
+    }
+
+    public Course getCourseByName(String name) throws SQLException, IOException {
+    	
+    	Course course;
+    	String query = "SELECT * FROM dbp079.kurs k WHERE k.name = ?";
+    	PreparedStatement pts = connection.prepareStatement(query);
+    	pts.setString(1, name);
+    	ResultSet resultSet = pts.executeQuery();
+    	while(resultSet.next()) {
+    		course = new Course(
+    				resultSet.getShort("KID"), 		//KID
+					resultSet.getString("NAME"), 	//Name
+					resultSet.getString("BESCHREIBUNGSTEXT"), 	//description
+					resultSet.getString("EINSCHREIBESCHLUESSEL"), 	//key
+					resultSet.getShort("FREIEPLAETZE"), 		//capacity
+					resultSet.getShort("ERSTELLER"));		//creator(id)	
+    		return course;
+    	}
+    	
+    	System.out.println("CourseStore: getCourseByName: Nothing found!");
+    	return null;
+    }
+    
     public ArrayList<Course> getCoursesByUID(int userId) throws IOException {
     	
     	try {
@@ -36,8 +80,9 @@ public class CourseStore implements Closeable {
     				+ " FROM dbp079.einschreiben e"
     				+ " JOIN dbp079.kurs k ON (e.kid = k.kid)"
     				+ " JOIN dbp079.benutzer b ON (k.ersteller = b.bnummer)"
-    				+ " WHERE e.bnummer=" + userId;
+    				+ " WHERE e.bnummer = ?";
     		PreparedStatement pst = connection.prepareStatement(query);
+    		pst.setInt(1, userId);
     		ResultSet resultSet = pst.executeQuery();
     		
     		while(resultSet.next()) {
@@ -108,6 +153,36 @@ public class CourseStore implements Closeable {
         catch (SQLException e) {
             throw new StoreException(e);
         }
+    }
+    
+    public void enrollUserInCourse(int userID, int courseID) throws StoreException {
+    	
+    	try {
+    		String sql = "INSERT INTO dbp079.einschreiben (bnummer, kid) VALUES (?, ?)";
+    		PreparedStatement ps = connection.prepareStatement(sql);
+    		ps.setInt(1, userID);
+    		ps.setInt(2, courseID);
+    		
+    		ps.executeUpdate();
+    	}catch (SQLException e) {
+    		
+    		throw new StoreException(e);
+    	}
+    }
+    
+    public void setCapacity(int courseID, int newCapacity) {
+    	
+    	try {
+    		String sql = "UPDATE dbp079.kurs SET freieplaetze = ? WHERE kid = ?";
+    		PreparedStatement ps = connection.prepareStatement(sql);
+    		ps.setInt(1, newCapacity);
+    		ps.setInt(2, courseID);
+    		
+    		ps.executeUpdate();
+    	} catch (SQLException e) {
+    		
+    		throw new StoreException(e);
+    	}
     }
 	
     public void complete() {

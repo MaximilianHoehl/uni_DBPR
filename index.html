@@ -1,0 +1,17 @@
+<table id="Calendar">
+	<tr>
+		<th>#</th>
+		<th>Name</th>
+		<th>Description</th>
+		<th>Appointment Number</th>
+	</tr>
+	<#list GroupCalendar as g>
+	<tr>
+		<td><a href="guestgui?action=selectHolidayOffer&amp;hid=${ho.id}" title="Make Booking">${g.groupID}</a></td>
+		<td>${g.name}</td>
+		<td>${g.description}</td>
+		<td>-</td>
+	</tr>
+	</#list>
+</table>
+

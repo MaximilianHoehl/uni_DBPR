@@ -17,28 +17,31 @@
 
 	<h2>Wilkommen, ${username}!</h2>
   	<br>
-  	
+  	<form action ="view_course" method="get">
   	<h4>Meine Kurse</h4>
   		<#list courses as course>
   			<div class="courseContainer">
-  				<a href="/view_course">${course.title}</a>
+  				<input name="clickedCourseID" value="${course.id}" style="visibility: hidden; display: none;"></input>
+  				<input action="test" style="background-color: Transparent; font-size: 20px; background-repeat: no-repeat; border: none; overflow: hidden;" value="${course.title}" name="clickedCourseName" type="submit"></input>
   				<p>Ersteller: ${course.creatorName}</p>
   				<p>Freie Plätze: ${course.capacity}</p>
   			</div>
   		</#list>
+  	</form>
   	<br>
-  	
+	<form action ="new_enroll" method="get">	
   	<h4>Verfügbare Kurse</h4>
   		<#list avCourses as avCourse>
   			<div class="courseContainer">
-  				<a href="/view_course">${avCourse.title}</a>
+  				<input name="clickedCourseID" value="${avCourse.id}" style="visibility: hidden; display: none;"></input>
+  				<input action="test" style="background-color: Transparent; font-size: 20px; background-repeat: no-repeat; border: none; overflow: hidden;" value="${avCourse.title}" name="clickedCourseName" type="submit"></input>
   				<p>Ersteller: ${avCourse.creatorName}</p>
   				<p>Freie Plätze: ${avCourse.capacity}</p>
   			</div>
   		</#list>
   	<br/>
   	<br/>
-  	
+	</from>	
   	<form action="new_course" method="get">
   		<input type="submit" value="Neuen Kurs Erstellen" />
   	</form>

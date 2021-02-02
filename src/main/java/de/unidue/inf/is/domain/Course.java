@@ -22,6 +22,17 @@ public final class Course {
 		this.key = key;
 	}
 	//Constructor for creating instance from QUERIED DB-DATA
+	public Course(short kid, String title, String description, String key, short capacity, short creator) throws IOException {
+		
+		this.id = kid;
+		this.title = title;
+		this.creatorId = creator;
+		this.capacity = capacity;
+		this.description = description;
+		this.key = key;
+		this.creatorName = creatorName;
+	}
+	//Constructor for creating instance from QUERIED DB-DATA with createName
 	public Course(short kid, String title, String description, String key, short capacity, short creator, String creatorName) throws IOException {
 		
 		this.id = kid;
@@ -31,6 +42,10 @@ public final class Course {
 		this.description = description;
 		this.key = key;
 		this.creatorName = creatorName;
+	}
+	public Boolean evaluateKey(String inputKey) {
+		
+		return this.key.equals(inputKey);
 	}
 	
 	

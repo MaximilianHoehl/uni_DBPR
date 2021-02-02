@@ -31,24 +31,21 @@ public final class UserStore implements Closeable {
 			try {
 				
 				User res;
-				String query = "SELECT * FROM dbp079.benutzer b WHERE b.bnummer = " + String.valueOf(id);
+				String query = "SELECT * FROM dbp079.benutzer b WHERE b.bnummer = ? ";
 				PreparedStatement st = connection.prepareStatement(query);
+				st.setInt(1, id);
 				ResultSet resultset = st.executeQuery();
 				
-				ResultSetMetaData rsmd = resultset.getMetaData();
-				int colNum = rsmd.getColumnCount();
-				System.out.println("hereFromUserStore");
-				int counter = 0;
+				ResultSetMetaData rsmd = resultset.getMetaData();			
 				
 				if(resultset.next()) {
-				res = new User(
-						resultset.getShort(1), 
-						resultset.getString(3), 
-						resultset.getString(2));
-				return res;
+					res = new User(
+							resultset.getShort(1), 
+							resultset.getString(3), 
+							resultset.getString(2));
+					return res;
 				}
-				
-				
+				System.out.println("UserStore: No user found!");
 				return null;
 				
 				

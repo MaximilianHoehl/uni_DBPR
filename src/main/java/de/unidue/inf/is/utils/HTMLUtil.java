@@ -20,6 +20,11 @@ public class HTMLUtil {
 		return "<p>" + element + "</p>";
 	}
 	
+	public static String createInputfiled(String name, String Label) {
+		
+		return Label + " <input name=" + name + " type\"text\"><br/>";
+	}
+	
 	public static String createMsg(String msg, int type) {
 		
 		String color;

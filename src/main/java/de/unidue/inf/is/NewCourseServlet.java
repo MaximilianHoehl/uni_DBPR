@@ -69,11 +69,11 @@ public class NewCourseServlet extends HttpServlet{
     		request.getRequestDispatcher("view_dialogue.ftl").forward(request, response);
     	}
     	
-    	//Create CourseObject from inputData
+    	//Create CourseObject from inputData (This point will only be reached if request passes the validation)
     	Course courseToAdd = new Course(
     			(String)request.getParameter("name"), 
-    			(String)request.getParameter("key"),
     			(String)request.getParameter("description"),
+    			(String)request.getParameter("key"),
     			Short.valueOf(request.getParameter("capacity")),
     			User.getCurrentUserId()
     			);  	
