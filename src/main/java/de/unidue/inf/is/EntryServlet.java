@@ -23,7 +23,7 @@ public final class EntryServlet extends HttpServlet {
     	
     	//LOGIN - fetch userData
     	UserStore userStore = new UserStore();
-    	User me = userStore.getUserById(2);
+    	User me = userStore.getUserById(6);
     	userStore.complete();
     	userStore.close();
     	String myName = me.getUserName();

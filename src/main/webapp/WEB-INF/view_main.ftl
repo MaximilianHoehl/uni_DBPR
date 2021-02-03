@@ -29,7 +29,7 @@
   		</#list>
   	</form>
   	<br>
-	<form action ="view_course" method="get">	
+	<form action ="view_course" method="get">
   	<h4>Verfügbare Kurse</h4>
   		<#list avCourses as avCourse>
   			<div class="courseContainer">

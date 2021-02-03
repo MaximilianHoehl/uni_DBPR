@@ -11,8 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import de.unidue.inf.is.domain.Course;
+import de.unidue.inf.is.domain.Submission;
+import de.unidue.inf.is.domain.Task;
 import de.unidue.inf.is.domain.User;
 import de.unidue.inf.is.stores.CourseStore;
+import de.unidue.inf.is.stores.TaskStore;
 
 public class ViewCourseServlet extends HttpServlet{
 
@@ -39,8 +42,25 @@ public class ViewCourseServlet extends HttpServlet{
 		
 		//Check if already signed in to set navtype
 		if(cs.checkIfUserEnrolledByID(selectedCourse.getId(), User.getCurrentUserId())) {	
-			System.out.println("SELECTED ENROLLED COURSE");
 			request.setAttribute("navtype", "enrolled");
+			System.out.println("SELECTED ENROLLED COURSE");
+			
+			//Fetch Tasks from course
+			TaskStore ts = new TaskStore();
+			ArrayList<Task> fetchedTasks = ts.getTasksFromCourse(selectedCourse.getId());
+			request.setAttribute("tasks", fetchedTasks);
+			ArrayList<Submission> submissions = new ArrayList<Submission>();
+			for(Task task : fetchedTasks) {
+				Submission sb = ts.getUserSubmission(User.getCurrentUserId(), task.getId());
+				if(sb != null) {
+					submissions.add(sb);
+				}else {
+					submissions.add(new Submission());
+				}
+			}
+			request.setAttribute("submissions", submissions);
+			ts.complete();
+			ts.close();	
 		}else {
 			request.setAttribute("navtype", "notEnrolled");
 		}

@@ -5,18 +5,16 @@
  
 <body>
 
-	<h2>view_course</h2>
 	<h1>Informationen</h1>
-	<br>
 	<h2>${title}</h2>
-	<br>
 	<h4>Ersteller: ${creator}</h4>
-	<br>
 	<h4>${description}</h4>
-	<br>
 	<h2>Anz. freier Plätze: ${capacity}</h2>
 	<br>
 	<#if navtype == "enrolled">
+			
+    	<form  name="form_deleteCourse" action="/view_main" method="get">
+		<input type="submit" value="Kurs löschen" />
 		
 		<h2>Liste der Aufgaben</h2>
 		<table>
@@ -26,14 +24,24 @@
 				<th><h4>Bewertungsnote</h4></th>
 			</tr>
 			<tr>
-				<td><P>Aufgabencontent</p></td>
-				<td><P>Abgabencontent</p></td>
-				<td><P>Bewertungscontent</p></td>
+				<td>
+					<#list tasks as task>
+						<p>${task.name}</p>
+					</#list>
+				</td>
+				<td>
+					<#list submissions as sub>
+						<p>${sub.text}</p>
+					</#list>
+				</td>
+				<td>
+					<#list submissions as sub>
+						<p>${sub.avgMarkText}</p>
+					</#list >
+				</td>
 			</tr>
 		</table>
-		
-    	<form  name="form_deleteCourse" action="/view_main" method="get">
-		<input type="submit" value="Kurs löschen" />
+
 		</form>
 	<#else>
     	<form name="form_enrollToCourse" action="/new_enroll" method="get">
