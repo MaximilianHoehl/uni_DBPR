@@ -40,7 +40,7 @@ public class EnrollCourseServlet extends HttpServlet{
 			System.out.println("Key of clicked course: " + clickedCourse.getKey());
 			if(clickedCourse.getKey()!=null) {
 				//request.setAttribute("value", "");
-				request.setAttribute("display", "block;");
+				request.setAttribute("display", "block;"); //<form style="display: ${display}" name="form_enrollToCourse" action="/new_enroll" method="get">
 			}else {
 				request.setAttribute("display", "none;");
 				//request.setAttribute("value", "NPWR");
@@ -53,13 +53,7 @@ public class EnrollCourseServlet extends HttpServlet{
         		request.setAttribute("targetAction", "/"); //this navigates to view_main
         		request.getRequestDispatcher("view_dialogue.ftl").forward(request, response);
 			}
-			//Check if already signed in
-			if(clickedCourse.getCreatorId() == User.getCurrentUserId()) {	//Will never evaluate since your own courses are directly linked to the view_course page
-				request.setAttribute("message", "Du bist bereits in diesen Kurs einschrieben! Klicke auf OK um zur Kursseite zu gelangen.");
-        		request.setAttribute("color", "color: red;");
-        		request.setAttribute("targetAction", "/view_course"); //this navigates to view_main
-        		request.getRequestDispatcher("view_dialogue.ftl").forward(request, response);
-			}
+			
 			
 			
 			

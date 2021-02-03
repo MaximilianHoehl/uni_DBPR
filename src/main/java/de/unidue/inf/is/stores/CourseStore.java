@@ -63,7 +63,8 @@ public class CourseStore implements Closeable {
 					resultSet.getString("BESCHREIBUNGSTEXT"), 	//description
 					resultSet.getString("EINSCHREIBESCHLUESSEL"), 	//key
 					resultSet.getShort("FREIEPLAETZE"), 		//capacity
-					resultSet.getShort("ERSTELLER"));		//creator(id)	
+					resultSet.getShort("ERSTELLER"),		//creator(id)
+    				getCreatorNameByID(resultSet.getShort("ERSTELLER"))); //creatorName
     		return course;
     	}
     	
@@ -183,6 +184,42 @@ public class CourseStore implements Closeable {
     		
     		throw new StoreException(e);
     	}
+    }
+    
+    public Boolean checkIfUserEnrolledByID(int courseID, int userID) {
+    	try {
+    		String sql = "SELECT COUNT(*) FROM dbp079.einschreiben WHERE bnummer = ? AND kid = ?";
+        	PreparedStatement ps = connection.prepareStatement(sql);
+        	ps.setInt(1, userID);
+        	ps.setInt(2, courseID);
+        	ResultSet rs = ps.executeQuery();
+        	while(rs.next()) {
+        		System.out.println("----MATCHED: " + rs.getInt(1));
+        		if(rs.getInt(1)!=0) {
+            		return true;
+            	}else {
+            		return false;
+            	}
+        	}
+    	}catch(SQLException e) {
+    		e.printStackTrace();
+    	}
+    	return null;
+    }
+    
+    private String getCreatorNameByID(int creatorID) throws SQLException {
+    	
+    	String name = null;
+    	String sql = "SELECT name FROM dbp079.benutzer WHERE bnummer = ?";
+    	PreparedStatement ps = connection.prepareStatement(sql);
+    	ps.setInt(1, creatorID);
+    	ResultSet rs = ps.executeQuery();
+    	while(rs.next()) {
+    		name = rs.getString(1);
+    	}
+    	if(name==null) {System.out.println("COURSESTORE: GETCREATORBYID: NAME NOT FOUND!");}
+    	System.out.println("NESTED FECHTED NAME: " + name);
+    	return name;
     }
 	
     public void complete() {
