@@ -18,46 +18,42 @@ import de.unidue.inf.is.utils.HTMLUtil;
 public class EnrollCourseServlet extends HttpServlet{
 
 	private static final long serialVersionUID = 1L;
-	Course clickedCourse;
+	Course selectedCourse;
 
 	@Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	
-		String clickedCourseName = request.getParameter("clickedCourseName");
-		System.out.println("Clicked Course Name: " + clickedCourseName);
+		String selectedCourseName = request.getParameter("test");
+		System.out.println("Clicked Course Name: " + selectedCourseName);
 		
 		//Init CourseStore
 		CourseStore cs = new CourseStore();
 		try {
 			
 			//Course clickedCourse = cs.getCourseByID(clickedCourseID);
-			clickedCourse = cs.getCourseByName(clickedCourseName);
+			selectedCourse = cs.getCourseByName(selectedCourseName);
 			cs.complete();
 			cs.close();
 			
 			//Check existence of course key and manipulate UI
-			System.out.println("TITLE: " + clickedCourse.getTitle());
-			System.out.println("Key of clicked course: " + clickedCourse.getKey());
-			if(clickedCourse.getKey()!=null) {
-				//request.setAttribute("value", "");
-				request.setAttribute("display", "block;"); //<form style="display: ${display}" name="form_enrollToCourse" action="/new_enroll" method="get">
-			}else {
+			if(selectedCourse.getKey() == null) {
 				request.setAttribute("display", "none;");
-				//request.setAttribute("value", "NPWR");
+			}else {
+				request.setAttribute("display", "block;");
 			}
+			System.out.println("TITLE: " + selectedCourse.getTitle());
+			System.out.println("Key of clicked course: " + selectedCourse.getKey());
 			
 			//Check if course is full
-			if(clickedCourse.getCapacity() <= 0) {	//Will never evaluate to true since those courses are not shown up and there are no other users in showcase
+			if(selectedCourse.getCapacity() <= 0) {	//Will never evaluate to true since those courses are not shown up and there are no other users in showcase
 				request.setAttribute("message", "Der Kurs ist leider voll belegt.");
         		request.setAttribute("color", "color: yellow;");
         		request.setAttribute("targetAction", "/"); //this navigates to view_main
         		request.getRequestDispatcher("view_dialogue.ftl").forward(request, response);
+        		return;
 			}
 			
-			
-			
-			
-			request.setAttribute("name", clickedCourse.getTitle());
+			request.setAttribute("name", selectedCourse.getTitle());
 		} catch (SQLException | IOException e) {
 			
 			e.printStackTrace();
@@ -65,6 +61,7 @@ public class EnrollCourseServlet extends HttpServlet{
     		request.setAttribute("color", "color: red;");
     		request.setAttribute("targetAction", "view_main");
     		request.getRequestDispatcher("view_dialogue.ftl").forward(request, response);
+    		return;
 		}
 		
 		
@@ -76,15 +73,16 @@ public class EnrollCourseServlet extends HttpServlet{
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	
-    	if(clickedCourse.getKey() != null) {
+    	if(selectedCourse.getKey() != null) {
     		String keyInput = request.getParameter("key");
-    		Boolean keyCorrect = clickedCourse.evaluateKey(keyInput);
-    		System.out.println("Evaluate KEY: " + clickedCourse.evaluateKey(keyInput));
+    		Boolean keyCorrect = selectedCourse.evaluateKey(keyInput);
+    		System.out.println("Evaluate KEY: " + selectedCourse.evaluateKey(keyInput));
     		if(!keyCorrect) {
     			request.setAttribute("message", "Invalid key! No access.");
         		request.setAttribute("color", "color: red;");
         		request.setAttribute("targetAction", "view_main");
         		request.getRequestDispatcher("view_dialogue.ftl").forward(request, response);
+        		return;
     		}
     	}
     	System.out.println("Authorization passed!");
@@ -92,14 +90,16 @@ public class EnrollCourseServlet extends HttpServlet{
     	//Setup DB connection
     	CourseStore cs = new CourseStore();
     	//Enroll user in course
-    	cs.enrollUserInCourse(User.getCurrentUserId(), clickedCourse.getId());
+    	cs.enrollUserInCourse(User.getCurrentUserId(), selectedCourse.getId());
     	//Capacity - 1
-    	cs.setCapacity(clickedCourse.getId(), clickedCourse.getCapacity()-1);
+    	cs.setCapacity(selectedCourse.getId(), selectedCourse.getCapacity()-1);
     	cs.complete();
     	cs.close();
 		
-    	request.setAttribute("name", clickedCourse.getTitle());
-    	request.getRequestDispatcher("view_course.ftl").forward(request, response);
+    	request.setAttribute("message", "Einschreiben erfolgreich!");
+		request.setAttribute("color", "color: green;");
+		request.setAttribute("targetAction", "view_main");//!!Transfer ID if change targetAction to view_corse!!
+		request.getRequestDispatcher("view_dialogue.ftl").forward(request, response);
     }
 
 }

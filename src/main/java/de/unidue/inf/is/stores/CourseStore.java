@@ -126,7 +126,7 @@ public class CourseStore implements Closeable {
     					resultSet.getString("EINSCHREIBESCHLUESSEL"), 	//key
     					resultSet.getShort("FREIEPLAETZE"), 			//capacity
     					resultSet.getShort(6),							//creatorId
-    					""));						//creatorName resultSet.getString(9)
+    					getCreatorNameByID(resultSet.getShort(6))));	//creatorName resultSet.getString(9)
     		}
     		
     		return res;

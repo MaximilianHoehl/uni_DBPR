@@ -22,7 +22,7 @@ public class ViewCourseServlet extends HttpServlet{
 
 	@Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	
+		
 		String clickedCourseName = request.getParameter("clickedCourseName");
 		CourseStore cs = new CourseStore();
 		//Try get course by name
