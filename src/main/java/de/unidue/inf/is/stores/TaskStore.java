@@ -52,6 +52,29 @@ public class TaskStore implements Closeable{
 		return null;
 	}
 	
+	public Task getTaskById(int id) {
+		Task task = null;
+		String sql = "SELECT * FROM dbp079.aufgabe afg"	//JOIN EINREICHEN to get BNUMMER
+				+ " WHERE afg.anummer = ?";
+		try {
+			PreparedStatement ps = connection.prepareStatement(sql);
+			ps.setInt(1, id);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				task = new Task(
+					rs.getShort("ANUMMER"),
+					rs.getShort("KID"),
+					rs.getString("NAME"),
+					rs.getString("BESCHREIBUNG")
+					);
+			}
+			return task;
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public Submission getUserSubmission(int userID, int taskID) {
 		
 		Submission userSubmission = null;
@@ -85,6 +108,61 @@ public class TaskStore implements Closeable{
 			e.printStackTrace();
 		}
 		return userSubmission;
+	}
+	
+	public boolean userHasSubmission(int userID, int taskID) {
+		
+		String sqlSubs = "SELECT COUNT(*) FROM dbp079.einreichen e"
+				+ " WHERE e.bnummer = ? AND e.anummer = ?";
+		try {
+			PreparedStatement ps = connection.prepareStatement(sqlSubs);
+			ps.setInt(1, userID);
+			ps.setInt(2, taskID);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				if(rs.getInt(1)!=0) {
+					System.out.println("-----MATCH BUT NOT NULL: " + userID + ", " + taskID + ": " + rs.getInt(1));
+					return true;
+				}else {
+					System.out.println("-----NO MATCH AND NULL");
+					return false;
+				}
+			}
+			System.out.println("-----NO MATCH");
+			return false;
+		}catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
+	
+	public void addUserSubmission(String submission, int taskID, int userID, int courseID) {
+		
+		String sql = "INSERT INTO dbp079.abgabe (abgabetext) values ?";
+		String sqlQueryID ="SELECT aid from dbp079.abgabe order by aid desc fetch first 1 rows only";
+		String sql2 = "INSERT INTO dbp079.einreichen (bnummer, kid, anummer, aid)"
+				+ " VALUES (?, ?, ?, ?)";
+		
+		try {
+			PreparedStatement ps = connection.prepareStatement(sql);
+			ps.setString(1, submission);
+			ps.executeUpdate();
+			PreparedStatement psQ = connection.prepareStatement(sqlQueryID);
+			ResultSet rs = psQ.executeQuery();
+			while(rs.next()) {
+				PreparedStatement psQueryID = connection.prepareStatement(sql2);
+				psQueryID.setInt(1, userID);
+				psQueryID.setInt(2, courseID);
+				psQueryID.setInt(3, taskID);
+				psQueryID.setInt(4, rs.getInt(1));
+				psQueryID.executeUpdate();
+				break;
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void complete() {

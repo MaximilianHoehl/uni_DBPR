@@ -69,6 +69,16 @@
 	</servlet-mapping>
 	
 	<servlet>
+		<servlet-name>NewAssignmentServlet</servlet-name>
+		<servlet-class>de.unidue.inf.is.NewAssignmentServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>NewAssignmentServlet</servlet-name>
+		<url-pattern>/new_assignment</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
 		<servlet-name>EnrollCourseServlet</servlet-name>
 		<servlet-class>de.unidue.inf.is.EnrollCourseServlet</servlet-class>
 	</servlet>

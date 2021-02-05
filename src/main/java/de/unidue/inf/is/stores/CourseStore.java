@@ -4,8 +4,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.sql.*;
-
 import de.unidue.inf.is.domain.User;
 import de.unidue.inf.is.utils.DBUtil;
 import de.unidue.inf.is.domain.*;
@@ -27,24 +25,27 @@ public class CourseStore implements Closeable {
         }
     }
     
-    public Course getCourseByID(int id) throws SQLException, IOException {
+    public Course getCourseByID(int id) {
     	
     	Course course;
     	String query = "SELECT * FROM dbp079.kurs k WHERE k.kid = ?";
-    	PreparedStatement pts = connection.prepareStatement(query);
-    	pts.setInt(1, id);
-    	ResultSet resultSet = pts.executeQuery();
-    	while(resultSet.next()) {
-    		course = new Course(
-    				resultSet.getShort("KID"), 		//KID
-					resultSet.getString("NAME"), 	//Name
-					resultSet.getString("BESCHREIBUNGSTEXT"), 	//description
-					resultSet.getString("EINSCHREIBESCHLUESSEL"), 	//key
-					resultSet.getShort("FREIEPLAETZE"), 		//capacity
-					resultSet.getShort("ERSTELLER"));		//creator(id)	
-    		return course;
+    	try {
+    		PreparedStatement pts = connection.prepareStatement(query);
+        	pts.setInt(1, id);
+        	ResultSet resultSet = pts.executeQuery();
+        	while(resultSet.next()) {
+        		course = new Course(
+        				resultSet.getShort("KID"), 		//KID
+    					resultSet.getString("NAME"), 	//Name
+    					resultSet.getString("BESCHREIBUNGSTEXT"), 	//description
+    					resultSet.getString("EINSCHREIBESCHLUESSEL"), 	//key
+    					resultSet.getShort("FREIEPLAETZE"), 		//capacity
+    					resultSet.getShort("ERSTELLER"));		//creator(id)	
+        		return course;
+        	}
+    	}catch(SQLException | IOException e) {
+    		e.printStackTrace();
     	}
-    	
     	System.out.println("CourseStore: getCourseByID: Nothing found!");
     	return null;
     }

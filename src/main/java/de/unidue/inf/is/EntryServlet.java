@@ -8,8 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.util.ArrayList;
-import de.unidue.inf.is.utils.*;
-
 import de.unidue.inf.is.domain.*;
 import de.unidue.inf.is.stores.*;
 
@@ -23,7 +21,7 @@ public final class EntryServlet extends HttpServlet {
     	
     	//LOGIN - fetch userData
     	UserStore userStore = new UserStore();
-    	User me = userStore.getUserById(6);
+    	User me = userStore.getUserById(1);
     	userStore.complete();
     	userStore.close();
     	String myName = me.getUserName();
@@ -50,7 +48,7 @@ public final class EntryServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	
-    	String action = request.getAttribute("action") == null ? "entry" : (String) request.getAttribute("action");
+    	
     	
     }
 }

@@ -12,21 +12,24 @@
 	<h2>Anz. freier Plätze: ${capacity}</h2>
 	<br>
 	<#if navtype == "enrolled">
-			
+		
     	<form  name="form_deleteCourse" action="/view_main" method="get">
 		<input type="submit" value="Kurs löschen" />
+		</form>
 		
+	<form  name="form_submission" action="/new_assignment" method="get">
 		<h2>Liste der Aufgaben</h2>
 		<table>
 			<tr>
 				<th><h4>Aufgabe</h4></th>
-				<th><h4>Meine Abhabe</h4></th>
-				<th><h4>Bewertungsnote</h4></th>
+				<th><h4>Meine Abgabe</h4></th>
+				<th><h4>Bewertun gsnote</h4></th>
 			</tr>
 			<tr>
 				<td>
 					<#list tasks as task>
-						<p>${task.name}</p>
+						<input action="test" style="background-color: Transparent; display: block; margin: 18px; border: none;" value="${task.id}-${task.name}" name="clickedTaskText" type="submit"></input>
+						
 					</#list>
 				</td>
 				<td>
@@ -41,8 +44,8 @@
 				</td>
 			</tr>
 		</table>
-
-		</form>
+	</form>
+		
 	<#else>
     	<form name="form_enrollToCourse" action="/new_enroll" method="get">
     	<input type="text" value="${title}" name="test" style="display: none;" />
