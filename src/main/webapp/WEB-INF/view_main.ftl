@@ -41,9 +41,10 @@
   		</#list>
   	<br/>
   	<br/>
-	</from>	
+	</form>
+  	
   	<form action="new_course" method="get">
-  		<input type="submit" value="Neuen Kurs Erstellen" />
+  		<input type="submit" value="Neuen Kurs erstellen" />
   	</form>
   		
 </body>

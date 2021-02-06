@@ -2,9 +2,6 @@ package de.unidue.inf.is;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import de.unidue.inf.is.domain.Course;
 import de.unidue.inf.is.domain.User;
 import de.unidue.inf.is.stores.CourseStore;
-import de.unidue.inf.is.utils.HTMLUtil;
 
 public class EnrollCourseServlet extends HttpServlet{
 
@@ -47,7 +43,7 @@ public class EnrollCourseServlet extends HttpServlet{
 			//Check if course is full
 			if(selectedCourse.getCapacity() <= 0) {	//Will never evaluate to true since those courses are not shown up and there are no other users in showcase
 				request.setAttribute("message", "Der Kurs ist leider voll belegt.");
-        		request.setAttribute("color", "color: yellow;");
+        		request.setAttribute("color", "color: red;");
         		request.setAttribute("targetAction", "/"); //this navigates to view_main
         		request.getRequestDispatcher("view_dialogue.ftl").forward(request, response);
         		return;

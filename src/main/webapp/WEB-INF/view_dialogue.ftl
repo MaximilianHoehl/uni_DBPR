@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Error</title>
+	<title>Dialog</title>
 </head>
  
 <body>

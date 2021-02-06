@@ -208,6 +208,51 @@ public class CourseStore implements Closeable {
     	return null;
     }
     
+    public void deleteSubmissionConnection(int courseID) throws SQLException {
+    	
+    	String sqlDeleteConnection = "DELETE from dbp079.einreichen WHERE kid=?";
+
+		PreparedStatement psDelConn = connection.prepareStatement(sqlDeleteConnection);
+		psDelConn.setInt(1, courseID);
+		psDelConn.executeUpdate();
+		System.out.println("Success: remove Connection. Deleted all form ID: " + courseID);
+    	
+    }
+    
+    public void deleteCourse(int courseID) throws SQLException {
+    	
+    	String sqlRemoveCourse = "DELETE FROM dbp079.kurs where kid=?";
+    	PreparedStatement psDelTasks = connection.prepareStatement(sqlRemoveCourse);
+		psDelTasks.setInt(1, courseID);
+		psDelTasks.executeUpdate();
+		System.out.println("Success: deletedCourse");
+    }
+    
+    public void cleanUpEnrollments(int courseID) throws SQLException {
+    	
+    	String sqlCleanUpEnrollments = "DELETE FROM dbp079.einschreiben e WHERE e.kid=?";
+    	
+		PreparedStatement psDelEnr = connection.prepareStatement(sqlCleanUpEnrollments);
+		psDelEnr.setInt(1, courseID);
+		psDelEnr.executeUpdate();
+		System.out.println("Success: cleanUpEnrollments");
+    	
+    }
+    
+    public ArrayList<Integer> getAidsFromCourse(int courseID) throws SQLException {
+    	
+    	ArrayList<Integer> res = new ArrayList<Integer>();
+    	String sql = "SELECT aid from dbp079.einreichen WHERE kid=?";
+    	PreparedStatement ps = connection.prepareStatement(sql);
+		ps.setInt(1, courseID);
+		ResultSet rs = ps.executeQuery();
+    	while(rs.next()) {
+    		res.add(rs.getInt(1));
+    	}
+    	return res;
+    }
+    
+    //Internal methods
     private String getCreatorNameByID(int creatorID) throws SQLException {
     	
     	String name = null;

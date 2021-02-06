@@ -69,11 +69,19 @@ public final class NewAssignmentServlet extends HttpServlet {
     	}
     	Task selectedTask = ts.getTaskById(selectedTaskID);
     	String submissionText = request.getParameter("submissionText");
-    	ts.addUserSubmission(submissionText, selectedTaskID, User.getCurrentUserId(), selectedTask.getCourseID());
+    	try {
+    		ts.addUserSubmission(submissionText, selectedTaskID, User.getCurrentUserId(), selectedTask.getCourseID());
+    		ts.complete();
+        	ts.close();
+    	}catch(Exception e) {
+    		ts.close();
+    		e.printStackTrace();
+    	}
     	
-    	ts.complete();
-    	ts.close();
-    	
+    	request.setAttribute("message", "Abgabe erfolgreich eingereicht!");
+		request.setAttribute("color", "color: green;");
+		request.setAttribute("targetAction", "/"); //this navigates to view_main
+		request.getRequestDispatcher("view_dialogue.ftl").forward(request, response);
     	
     }
 }

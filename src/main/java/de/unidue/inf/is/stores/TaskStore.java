@@ -137,32 +137,108 @@ public class TaskStore implements Closeable{
 		
 	}
 	
-	public void addUserSubmission(String submission, int taskID, int userID, int courseID) {
+	public void addUserSubmission(String submission, int taskID, int userID, int courseID) throws SQLException {
 		
 		String sql = "INSERT INTO dbp079.abgabe (abgabetext) values ?";
 		String sqlQueryID ="SELECT aid from dbp079.abgabe order by aid desc fetch first 1 rows only";
 		String sql2 = "INSERT INTO dbp079.einreichen (bnummer, kid, anummer, aid)"
 				+ " VALUES (?, ?, ?, ?)";
 		
-		try {
-			PreparedStatement ps = connection.prepareStatement(sql);
-			ps.setString(1, submission);
-			ps.executeUpdate();
-			PreparedStatement psQ = connection.prepareStatement(sqlQueryID);
-			ResultSet rs = psQ.executeQuery();
-			while(rs.next()) {
-				PreparedStatement psQueryID = connection.prepareStatement(sql2);
-				psQueryID.setInt(1, userID);
-				psQueryID.setInt(2, courseID);
-				psQueryID.setInt(3, taskID);
-				psQueryID.setInt(4, rs.getInt(1));
-				psQueryID.executeUpdate();
-				break;
-			}
+		
+		PreparedStatement ps = connection.prepareStatement(sql);
+		ps.setString(1, submission);
+		ps.executeUpdate();
+		PreparedStatement psQ = connection.prepareStatement(sqlQueryID);
+		ResultSet rs = psQ.executeQuery();
+		while(rs.next()) {
+			PreparedStatement psQueryID = connection.prepareStatement(sql2);
+			psQueryID.setInt(1, userID);
+			psQueryID.setInt(2, courseID);
+			psQueryID.setInt(3, taskID);
+			System.out.println("QueryResult: " + rs.getInt(1));
+			psQueryID.setInt(4, rs.getInt(1));
+			psQueryID.executeUpdate();
+			break;
+		}
 			
+	}
+	
+	public void cleanUpRatings(int courseID) throws SQLException {
+		
+		String sqlRemoveUnconnectedRating = "DELETE FROM dbp079.bewerten b WHERE b.aid IN (SELECT aid FROM dbp079.einreichen WHERE kid=?)";
+		PreparedStatement psDelRatings = connection.prepareStatement(sqlRemoveUnconnectedRating);
+		psDelRatings.setInt(1, courseID);
+		psDelRatings.executeUpdate();
+		System.out.println("Success: cleanUpRatings");
+		
+		//Setup dynamic query-string depending on length of id-array
+		//This will delete every rating where one of the taskIDs is inside of the "einreichen" relation
+		/*String sqlRemoveRatings = "DELETE FROM dbp079.bewerten b WHERE b.aid IN"
+				+ " (SELECT aid FROM dbp079.einreichen e WHERE e.anummer  (";//Bewerten doesnt contain taskIDs, so we have to subselect them
+		for(int i=0; i<taskIDs.length; i++) {
+			if(i==taskIDs.length-1) {
+				sqlRemoveRatings += "?)";
+			}else {
+				sqlRemoveRatings += "?, ";
+			}
+		}
+		
+		try {
+			PreparedStatement ps = connection.prepareStatement(sqlRemoveRatings);
+			for(int i=1; i<taskIDs.length; i++) {
+				ps.setInt(i, taskIDs[i]);
+			}
+			ps.executeUpdate();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}*/
+	}
+	
+	public void cleanUpSubmissions(ArrayList<Integer> aids) throws SQLException {
+		
+		String sql = "DELETE FROM dbp079.abgabe WHERE aid=?";
+		PreparedStatement psDelSubs = connection.prepareStatement(sql);
+		psDelSubs.setInt(1, aids.get(0));
+		psDelSubs.executeUpdate();
+		System.out.println("Deleted the firs aid for test");
+		/*String sqlRemoveUnconnectedSubmissions = "DELETE FROM dbp079.abgabe WHERE aid IN (";
+		
+		for(int i=0; i<aids.size(); i++) {
+			if(i==aids.size()-1) {
+				sqlRemoveUnconnectedSubmissions += "?)";
+			}else {
+				sqlRemoveUnconnectedSubmissions += "?, ";
+			}
+		}
+		
+		System.out.println(sqlRemoveUnconnectedSubmissions);
+		
+		try {
+			PreparedStatement ps = connection.prepareStatement(sqlRemoveUnconnectedSubmissions);
+			for(int i=1; i<aids.size(); i++) {
+				ps.setInt(i, aids.get(i));
+			}
+			ps.executeUpdate();
+			System.out.println("hope this works..");
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
+		
+		PreparedStatement psDelSubs = connection.prepareStatement(sqlRemoveUnconnectedSubmissions);
+		psDelSubs.executeUpdate();
+		System.out.println("Success: cleanUpSubmissions");*/
+		
+	}
+	
+	public void cleanUpTasks(int courseID) throws SQLException {
+		
+		String sqlRemoveUnconnectedTasks = "DELETE FROM dbp079.aufgabe WHERE kid=?";
+		
+		PreparedStatement psDelTasks = connection.prepareStatement(sqlRemoveUnconnectedTasks);
+		psDelTasks.setInt(1, courseID);
+		psDelTasks.executeUpdate();
+		System.out.println("Success: cleanUpTasks");
+		
 	}
 	
 	public void complete() {

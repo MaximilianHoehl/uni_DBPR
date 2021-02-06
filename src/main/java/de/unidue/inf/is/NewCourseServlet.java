@@ -1,15 +1,10 @@
 package de.unidue.inf.is;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.ibm.db2.jcc.am.SqlException;
 
 import de.unidue.inf.is.domain.*;
 import de.unidue.inf.is.stores.*;
@@ -22,9 +17,7 @@ public class NewCourseServlet extends HttpServlet{
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	
     	System.out.println("arrivedOn_NewCourseServlet_GET");
-    	
-    	
-    	
+
     	request.getRequestDispatcher("new_course.ftl").forward(request, response);
 		 
     }

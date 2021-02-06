@@ -13,7 +13,7 @@
 	<br>
 	<#if navtype == "enrolled">
 		
-    	<form  name="form_deleteCourse" action="/view_main" method="get">
+    	<form  name="form_deleteCourse" action="/view_course?action=deleteCourse" method="POST">
 		<input type="submit" value="Kurs löschen" />
 		</form>
 		

@@ -79,7 +79,46 @@ public class ViewCourseServlet extends HttpServlet{
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	
-    	request.getRequestDispatcher("view_course.ftl").forward(request, response);
+    	System.out.println("Action when deleting: " + request.getParameter("Action"));
+    	
+    	if(selectedCourse.getCreatorId() != User.getCurrentUserId()) {
+    		request.setAttribute("message", "Nur der Ersteller kann den Kurs löschen!");
+    		request.setAttribute("color", "color: red;");
+    		request.setAttribute("targetAction", "/"); //this navigates to view_main
+    		request.getRequestDispatcher("view_dialogue.ftl").forward(request, response);
+    		return;
+    	}
+    	TaskStore ts = new TaskStore();
+    	CourseStore cs = new CourseStore();
+    	
+    	System.out.println(selectedCourse.getId());
+    	
+    	try {
+    		//ArrayList<Integer> aids = cs.getAidsFromCourse(selectedCourse.getId());
+    		//ts.cleanUpRatings(selectedCourse.getId());
+    		cs.deleteSubmissionConnection(selectedCourse.getId());
+        	cs.cleanUpEnrollments(selectedCourse.getId());
+    		//ts.cleanUpTasks(selectedCourse.getId());
+        	//ts.cleanUpSubmissions(aids);
+        	cs.deleteCourse(selectedCourse.getId());
+        	
+        	ts.complete();
+        	cs.complete();
+        	ts.close();
+    		cs.close();
+
+    	}catch(Exception e) {
+    		ts.close();
+    		cs.close();
+    		e.printStackTrace();
+    	}
+    	//ts.close();
+    	//cs.close();
+    	
+    	request.setAttribute("message", "Kurs erfolgeich gelöscht!");
+		request.setAttribute("color", "color: green;");
+		request.setAttribute("targetAction", "/"); //this navigates to view_main
+		request.getRequestDispatcher("view_dialogue.ftl").forward(request, response);
     }
 
 }
