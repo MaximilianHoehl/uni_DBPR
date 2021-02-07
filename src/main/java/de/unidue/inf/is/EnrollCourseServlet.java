@@ -32,7 +32,7 @@ public class EnrollCourseServlet extends HttpServlet{
 			cs.close();
 			
 			//Check existence of course key and manipulate UI
-			if(selectedCourse.getKey() == null) {
+			if((selectedCourse.getKey() == null) | (selectedCourse.getKey().equals(""))) {
 				request.setAttribute("display", "none;");
 			}else {
 				request.setAttribute("display", "block;");

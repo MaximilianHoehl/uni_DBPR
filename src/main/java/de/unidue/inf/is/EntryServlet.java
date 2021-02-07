@@ -37,6 +37,7 @@ public final class EntryServlet extends HttpServlet {
     	courseStore.complete();
     	courseStore.close();
     	
+    	//Set data to UI
     	request.setAttribute("courses", myCourses);
     	request.setAttribute("avCourses", avCourses);
     	

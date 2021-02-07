@@ -40,7 +40,7 @@
 				<td>
 					<#list submissions as sub>
 						<p>${sub.avgMarkText}</p>
-					</#list >
+					</#list>
 				</td>
 			</tr>
 		</table>
