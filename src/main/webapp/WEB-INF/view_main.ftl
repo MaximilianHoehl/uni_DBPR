@@ -12,7 +12,7 @@
 		}
 	</style>	
 </head>
- 
+
 <body>
 
 	<h2>Wilkommen, ${username}!</h2>
@@ -21,8 +21,10 @@
   	<h4>Meine Kurse</h4>
   		<#list courses as course>
   			<div class="courseContainer">
+  				
   				<input name="clickedCourseID" value="${course.id}" style="visibility: hidden; display: none;"></input>
-  				<input action="test" style="background-color: Transparent; font-size: 20px; background-repeat: no-repeat; border: none; overflow: hidden;" value="${course.title}" name="clickedCourseName" type="submit"></input>
+  				<input id="CourseFieldset" action="test" style="background-color: Transparent; font-size: 20px; background-repeat: no-repeat; border: none; overflow: hidden;" value="${course.title}" name="clickedCourseName" type="submit"></input>
+  				
   				<p>Ersteller: ${course.creatorName}</p>
   				<p>Freie Plätze: ${course.capacity}</p>
   			</div>

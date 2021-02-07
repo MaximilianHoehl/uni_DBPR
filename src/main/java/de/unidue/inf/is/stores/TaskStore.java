@@ -55,7 +55,7 @@ public class TaskStore implements Closeable{
 	public Task getTaskById(int id) {
 		Task task = null;
 		String sql = "SELECT * FROM dbp079.aufgabe afg"	//JOIN EINREICHEN to get BNUMMER
-				+ " WHERE afg.anummer = ?";
+				+ " WHERE afg.anummer = ? ORDER BY afg.anummer ASC";
 		try {
 			PreparedStatement ps = connection.prepareStatement(sql);
 			ps.setInt(1, id);

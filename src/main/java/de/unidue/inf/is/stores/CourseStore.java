@@ -40,7 +40,8 @@ public class CourseStore implements Closeable {
     					resultSet.getString("BESCHREIBUNGSTEXT"), 	//description
     					resultSet.getString("EINSCHREIBESCHLUESSEL"), 	//key
     					resultSet.getShort("FREIEPLAETZE"), 		//capacity
-    					resultSet.getShort("ERSTELLER"));		//creator(id)	
+    					resultSet.getShort("ERSTELLER"), //creator(id)
+    					getCreatorNameByID(resultSet.getShort("ERSTELLER"))); //creatorName);		//creator(id)	
         		return course;
         	}
     	}catch(SQLException | IOException e) {

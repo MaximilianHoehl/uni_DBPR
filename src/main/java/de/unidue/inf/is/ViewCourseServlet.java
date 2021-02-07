@@ -14,6 +14,7 @@ import de.unidue.inf.is.domain.Task;
 import de.unidue.inf.is.domain.User;
 import de.unidue.inf.is.stores.CourseStore;
 import de.unidue.inf.is.stores.TaskStore;
+import de.unidue.inf.is.utils.Backpack;
 
 public class ViewCourseServlet extends HttpServlet{
 
@@ -24,12 +25,26 @@ public class ViewCourseServlet extends HttpServlet{
 	@Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		//-------------------------------------
+		ArrayList<String> mainPageCourseTitles = Backpack.getCourseTitles();
+		ArrayList<Integer> mainPageCourseKIDs = Backpack.getCourseIDs();
+		//-------------------------------------
+		
+
 		System.out.println("CourseID: " + request.getParameter("clickedCourseID"));
 		String clickedCourseName = request.getParameter("clickedCourseName");
 		CourseStore cs = new CourseStore();
-		//Try get course by name
+		//-------------------------------------
+		int i = mainPageCourseTitles.indexOf(clickedCourseName);
+		int backpackedKid = mainPageCourseKIDs.get(i);
+		//-------------------------------------
+		
+		
+		//Try get course by name BZW ID
 		try {
-			selectedCourse = cs.getCourseByName(clickedCourseName);
+			//selectedCourse = cs.getCourseByName(clickedCourseName);
+			selectedCourse = cs.getCourseByID(backpackedKid);
+			
 			
 		}catch(Exception e) {
 			request.setAttribute("message", "Serverinternal Error - Course not found :/");
@@ -39,12 +54,12 @@ public class ViewCourseServlet extends HttpServlet{
 			e.printStackTrace();
 		}
 		
-		//Check if already signed in to set navtype
+		//Check if already enrolled to set navtype
 		if(cs.checkIfUserEnrolledByID(selectedCourse.getId(), User.getCurrentUserId())) {	
 			request.setAttribute("navtype", "enrolled");
 			System.out.println("SELECTED ENROLLED COURSE");
 			
-			//Fetch Tasks from course
+			//Fetch Tasks and their submissions from course (by ID)
 			TaskStore ts = new TaskStore();
 			ArrayList<Task> fetchedTasks = ts.getTasksFromCourse(selectedCourse.getId());
 			request.setAttribute("tasks", fetchedTasks);
@@ -54,12 +69,13 @@ public class ViewCourseServlet extends HttpServlet{
 				if(sb != null) {
 					submissions.add(sb);
 				}else {
-					submissions.add(new Submission());
+					submissions.add(new Submission()); //Konstruktor initialisiert mit "keine Bewertung"
 				}
 			}
-			request.setAttribute("submissions", submissions);
+			request.setAttribute("submissions", submissions); //Pass submission-array into attribute
 			ts.complete();
-			ts.close();	
+			ts.close();
+			
 		}else {
 			request.setAttribute("navtype", "notEnrolled");
 		}
@@ -96,11 +112,11 @@ public class ViewCourseServlet extends HttpServlet{
     	try {
     		//ArrayList<Integer> aids = cs.getAidsFromCourse(selectedCourse.getId());
     		//ts.cleanUpRatings(selectedCourse.getId());
-    		cs.deleteSubmissionConnection(selectedCourse.getId());
+    		//cs.deleteSubmissionConnection(selectedCourse.getId());
         	cs.cleanUpEnrollments(selectedCourse.getId());
     		//ts.cleanUpTasks(selectedCourse.getId());
         	//ts.cleanUpSubmissions(aids);
-        	cs.deleteCourse(selectedCourse.getId());
+        	//cs.deleteCourse(selectedCourse.getId());
         	
         	ts.complete();
         	cs.complete();
